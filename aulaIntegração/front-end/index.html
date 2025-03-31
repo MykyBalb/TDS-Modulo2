@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Página do professor</h1>
+    <form>
+      <input
+        type="button"
+        onclick="preencheProdutosDoBanco()"
+        name="carregar"
+        value="Carregar"
+      />
+      <br /><br />
+
+      <fieldset>
+        <input type="text" id="id" placeholder="nome" /><br />
+        <input type="text" id="id" placeholder="descricao" /><br />
+        <input type="text" id="id" placeholder="quantidade" /><br />
+        <input
+          type="button"
+          onclick="insereProduto()"
+          name="Enviar"
+          value="Enviar"
+        />
+      </fieldset>
+      <br /><br />
+      <table border="1">
+        <thead>
+          <th>id</th>
+          <th>nome</th>
+          <th>descrição</th>
+          <th>quantidade</th>
+        </thead>
+        <tbody id="tabela-produtos"></tbody>
+      </table>
+      <div id="valor"></div>
+    </form>
+  </body>
+  <script>
+    function preencheProdutosDoBanco() {
+      let produtosBanco = document.getElementById("produtos-banco");
+      fetch("http://localhost:8080/produto")
+        .then((response) => response.json())
+        .then((data) => formataComoTabela(data))
+        .catch((error) => console.error("Erro:", error));
+    }
+
+    function formataComoTabela(data) {
+      let tabelaProdutos = document.getElementById("tabela-produtos");
+      console.log(data);
+      for (let i = 0; i < data.length; i++) {
+        let paraInserir =
+          "<td>" +
+          data[i].id +
+          "</td>" +
+          "<td>" +
+          data[i].nome +
+          "</td>" +
+          "<td>" +
+          data[i].descricao +
+          "</td>" +
+          "<td>" +
+          data[i].quantidade +
+          "</td>";
+        tabelaProdutos.innerHTML += paraInserir;
+      }
+    }
+
+    function insereProduto() {
+        let nome = document.querySelector('#nome');
+        let desc = document.querySelector('#desc');
+        let quant = document.querySelector('#quant');
+
+        const dados = {
+          nome: nome,
+          desc: desc,
+          quant: quant
+        };
+    
+        fetch('https://exemplo.com/api/produtos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',  // Definindo o formato JSON
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(dadosProduto)  // Converte os dados do produto para JSON
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erro na requisição: ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => console.log('Produto cadastrado com sucesso:', data))
+    .catch(error => console.error('Erro ao cadastrar produto:', error));
+  }
+    }
+  </script>
+</html>
